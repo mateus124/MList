@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
 import styles from './BoardTitleModal.module.css';
 
-const BoardTitleModal = ({ isOpen, onClose, onSave, initialTitle = '' }) => {
+const BoardTitleModal = ({
+    isOpen,
+    onClose,
+    onSave,
+    initialTitle = '',
+    placeholder = 'Digite o título do card...',
+    requiredMessage = 'Nome do card é obrigatório',
+    submitLabel = 'Atualizar',
+}) => {
     const [value, setValue] = useState(initialTitle);
     const [error, setError] = useState('');
 
@@ -19,7 +27,7 @@ const BoardTitleModal = ({ isOpen, onClose, onSave, initialTitle = '' }) => {
         const normalizedValue = value.trim();
 
         if (!normalizedValue) {
-            setError('Nome do card é obrigatório');
+            setError(requiredMessage);
             return;
         }
 
@@ -35,7 +43,7 @@ const BoardTitleModal = ({ isOpen, onClose, onSave, initialTitle = '' }) => {
                     setValue(event.target.value);
                     setError('');
                 }}
-                placeholder="Digite o título do card..."
+                placeholder={placeholder}
                 className={styles.input}
                 autoFocus
                 maxLength={40}
@@ -45,7 +53,7 @@ const BoardTitleModal = ({ isOpen, onClose, onSave, initialTitle = '' }) => {
 
             <div className={styles.actions}>
                 <button type="submit" className={styles.buttonAdd}>
-                    Atualizar
+                    {submitLabel}
                 </button>
                 <button type="button" className={styles.buttonCancel} onClick={onClose}>
                     ×

@@ -79,9 +79,14 @@ const Card = ({ title, cardId, columnId, onRenameBoard, onDeleteBoard }) => {
         setIsDeleteBoardOpen(false);
     };
 
+    const handleCardContextMenu = (event) => {
+        event.preventDefault();
+        setIsMenuOpen(true);
+    };
+
     return (
         <>
-            <div className={styles.card}>
+            <div className={styles.card} onContextMenu={handleCardContextMenu}>
                 <div className={styles.header}>
                     <h3>{title.toUpperCase()}</h3>
                     <div className={styles.actions} ref={menuRef}>
