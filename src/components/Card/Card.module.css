@@ -16,6 +16,13 @@
     margin-top: 5px;
 }
 
+.content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0;
+    margin-top: 8px;
+}
+
 .actions {
     display: flex;
     align-items: center;
