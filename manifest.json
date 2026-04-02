@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "MList",
+  "version": "1.0.0",
+  "description": "Dashboard de links para produtividade em sua nova aba do Chrome",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_title": "MList - Dashboard de Links"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "icons": {
+    "128": "icon-128.png"
+  }
+}

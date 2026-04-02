@@ -1,0 +1,92 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    row-gap: 6px;
+}
+
+.field label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #a4afbc;
+}
+
+.field input {
+    background-color: #3a465299;
+    border: 1px solid #4a5762;
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #d7deea;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.field input::placeholder {
+    color: #687380;
+}
+
+.field input:focus {
+    outline: none;
+    border-color: #0fef85;
+    background-color: #454d5d;
+}
+
+.field input.error {
+    border-color: #ff6b6b;
+}
+
+.errorText {
+    font-size: 0.85rem;
+    color: #ff6b6b;
+}
+
+.actions {
+    display: flex;
+    column-gap: 10px;
+    margin-top: 8px;
+}
+
+.buttonAdd {
+    flex: 1;
+    background-color: #0fef85;
+    color: #212531;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.buttonAdd:hover {
+    background-color: #24ff9a;
+    transform: translateY(-1px);
+}
+
+.buttonAdd:active {
+    transform: translateY(0);
+}
+
+.buttonCancel {
+    flex: 1;
+    background-color: transparent;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.buttonCancel:hover {
+    background-color: #e74c3c;
+    color: #fff;
+}

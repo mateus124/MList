@@ -87,7 +87,7 @@ const Header = () => {
                 )}
             </div>
 
-            <button className={styles.buttonadd}><TiPlus size={20}/></button>
+            <button className={styles.buttonadd} title="Adicionar abas"><TiPlus size={20}/></button>
         </div>
     )
 }

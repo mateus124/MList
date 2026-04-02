@@ -30,10 +30,10 @@ const CardItem = ({ label, href = '#' }) => {
                 <span className={styles.label}>{label}</span>
             </a>
             <div className={styles.actions}>
-                <button className={styles.actionBtn} aria-label="Editar">
+                <button className={styles.actionBtn} title="Editar">
                     <TbEdit size={18} />
                 </button>
-                <button className={styles.actionBtn} aria-label="Deletar">
+                <button className={styles.actionBtn} title="Deletar">
                     <MdOutlineDeleteOutline size={18} />
                 </button>
             </div>
