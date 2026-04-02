@@ -6,10 +6,16 @@ export const WALLPAPERS = [
     fallbackPalette: { base: { r: 33, g: 37, b: 49 }, accent: { r: 15, g: 239, b: 133 } },
   },
   {
-    id: 'tema-exemplo',
-    name: 'Exemplo',
+    id: 'tema-sky',
+    name: 'Sky Blue',
     url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1400&q=80',
     fallbackPalette: { base: { r: 32, g: 45, b: 70 }, accent: { r: 83, g: 185, b: 255 } },
+  },
+  {
+    id: 'tema-porsche-gt3-rs',
+    name: 'Porsche GT3 RS',
+    url: 'https://images.unsplash.com/photo-1634673970798-a15ae56f6c65?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    fallbackPalette: { base: { r: 34, g: 37, b: 42 }, accent: { r: 243, g: 146, b: 32 } },
   },
 ];
 

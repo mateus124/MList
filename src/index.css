@@ -30,3 +30,14 @@ body {
   padding: 20px;
   min-height: 100vh;
 }
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}

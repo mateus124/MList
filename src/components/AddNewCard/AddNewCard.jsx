@@ -35,7 +35,7 @@ const AddNewCard = ({ className = '', onCreateCard }) => {
                 />
 
                 <button type="submit" className={styles.buttonAdd}>
-                    Adicionar
+                    Add
                 </button>
 
                 <button type="button" className={styles.buttonCancel} onClick={resetForm}>
