@@ -85,6 +85,86 @@ Após o build, os arquivos otimizados serão gerados na pasta `dist/`.
 2. Verifique se o dashboard do MList está sendo exibido
 3. Teste criação/edição dos cards e persistência dos links
 
+## Instalação pela Release
+
+Use este fluxo quando quiser instalar uma versão estável já empacotada.
+
+### 1) Baixar a release
+
+1. Acesse a página de releases do repositório no GitHub
+2. Abra a versão desejada (ex.: `v1.0.0`)
+3. Baixe o arquivo `.zip` de distribuição da extensão (normalmente `mlist-dist.zip`)
+
+### 2) Extrair os arquivos
+
+1. Extraia o conteúdo do `.zip` em uma pasta local
+2. Confirme que a pasta extraída contém os arquivos da extensão (incluindo `manifest.json`)
+
+### 3) Instalar no Chrome
+
+1. Abra `chrome://extensions/`
+2. Ative o **Modo do desenvolvedor**
+3. Clique em **Carregar sem compactação**
+4. Selecione a pasta extraída da release
+
+### 4) Atualizar para uma nova versão
+
+1. Baixe e extraia a nova release
+2. Em `chrome://extensions/`, clique em **Atualizar**
+3. Se necessário, remova a versão anterior e carregue a nova pasta novamente
+
+## Contribuição
+
+Contribuições são bem-vindas.
+
+### Fluxo recomendado
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua alteração
+
+```bash
+git checkout -b feat/minha-melhoria
+```
+
+3. Instale as dependências e rode localmente
+
+```bash
+npm install
+npm run dev
+```
+
+4. Valide o build antes de abrir PR
+
+```bash
+npm run build
+```
+
+5. Faça commit com mensagem clara
+
+```bash
+git add .
+git commit -m "feat: descreve sua melhoria"
+```
+
+6. Envie sua branch
+
+```bash
+git push origin feat/minha-melhoria
+```
+
+7. Abra um Pull Request com:
+- resumo da mudança
+- motivação
+- prints/gifs (quando houver alteração visual)
+- passos para testar
+
+### Boas práticas
+
+- Mantenha PRs pequenos e focados
+- Evite misturar refactor grande com nova feature
+- Atualize documentação quando necessário
+- Garanta que a aplicação builda sem erros
+
 ## Roadmap (Possíveis Melhorias Futuras) 
 
 - [ ] Suporte a arrastar e soltar (drag and drop) para reordenar cards e links
