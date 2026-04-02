@@ -1,0 +1,41 @@
+.column {
+    display: flex;
+    flex-direction: column;
+    min-height: 80vh;
+}
+
+.cardsArea {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.addArea {
+    margin-top: 20px;
+    min-height: 52px;
+    width: 90%;
+    align-self: center;
+}
+
+.addButton {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.column:hover .addButton,
+.addArea:focus-within .addButton {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.column:has(.cardsArea:hover) .addButton {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(6px);
+}

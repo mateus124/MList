@@ -24,6 +24,7 @@
 }
 
 .actions {
+    position: relative;
     display: flex;
     align-items: center;
     column-gap: 5px;

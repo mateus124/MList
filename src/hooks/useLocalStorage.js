@@ -49,7 +49,22 @@ const useLocalStorage = (key, initialValue = []) => {
         }
     };
 
-    return { data, saveToStorage, isLoaded };
+    const removeFromStorage = async () => {
+        setData(initialValue);
+
+        try {
+            if (hasChromeStorage) {
+                await chrome.storage.local.remove([key]);
+                return;
+            }
+
+            window.localStorage.removeItem(key);
+        } catch (error) {
+            console.error('Erro ao remover dados do storage:', error);
+        }
+    };
+
+    return { data, saveToStorage, removeFromStorage, isLoaded };
 };
 
 export default useLocalStorage;

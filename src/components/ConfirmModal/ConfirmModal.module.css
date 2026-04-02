@@ -1,0 +1,47 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.description {
+    color: #b8c5d1;
+    line-height: 1.5;
+    font-size: 0.98rem;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.buttonConfirm,
+.buttonCancel {
+    flex: 1;
+    height: 44px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.buttonConfirm {
+    background-color: #ff6273;
+    color: #1f2430;
+    transition: .3s;
+}
+
+.buttonCancel {
+    background-color: #343c4e;
+    color: #b8c5d1;
+}
+
+.buttonConfirm:hover {
+    background-color: #ff838f;
+    transition: .3s;
+}
+
+.buttonCancel:hover {
+    background-color: #495265;
+    transition: .3s;
+}
