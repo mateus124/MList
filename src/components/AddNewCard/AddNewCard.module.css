@@ -5,10 +5,10 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    border: 1px dashed #0bab61;
+    border: 1px dashed color-mix(in srgb, var(--accent) 70%, transparent);
     border-radius: 10px;
     padding: 15px 0px;
-    color: #0bab61;
+    color: var(--accent);
     column-gap: 10px;
     font-size: 1rem;
     margin: 0 auto;
@@ -17,15 +17,15 @@
 }
 
 .button:hover {
-    border-color: #0fef85;
-    color: #0fef85;
+    border-color: var(--accent);
+    color: var(--accent);
     transition: .3s;
-    background-color: hsla(152, 88%, 50%, 0.1);
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .form {
-    background-color: #262c3d;
-    border: 1px solid #3f4960;
+    background: var(--surface-strong);
+    border: 1px solid var(--surface-border);
     border-radius: 12px;
     width: 100%;
     display: flex;
@@ -33,6 +33,8 @@
     column-gap: 8px;
     padding: 12px;
     box-sizing: border-box;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
 .input {
@@ -41,23 +43,23 @@
     background-color: transparent;
     border: none;
     border-radius: 10px;
-    color: #b8c5d1;
+    color: var(--text-primary);
     height: 40px;
     padding: 0 14px;
     font-size: 1rem;
 }
 
 .input::placeholder {
-    color: #6f7b8c;
+    color: var(--text-muted);
 }
 
 .input:focus {
     outline: none;
-    border-color: #0fef85;
+    border-color: var(--accent);
 }
 
 .buttonAdd {
-    background-color: #0fef85;
+    background-color: var(--accent);
     border: none;
     border-radius: 8px;
     color: #15222a;
@@ -70,10 +72,10 @@
 }
 
 .buttonCancel {
-    background-color: #343d53;
-    border: 1px solid #894457;
+    background-color: var(--surface-bg);
+    border: 1px solid color-mix(in srgb, var(--danger) 55%, transparent);
     border-radius: 8px;
-    color: #ed5f75;
+    color: var(--danger);
     width: 30px;
     height: 30px;
     display: flex;

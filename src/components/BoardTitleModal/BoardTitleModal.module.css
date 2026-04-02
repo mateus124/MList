@@ -10,25 +10,25 @@
     min-width: 0;
     height: 44px;
     border-radius: 12px;
-    border: 1px solid #414a5f;
-    background-color: #2c3242;
-    color: #b8c5d1;
+    border: 1px solid var(--surface-border);
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
     padding: 0 14px;
     font-size: 1rem;
 }
 
 .input::placeholder {
-    color: #738096;
+    color: var(--text-muted);
 }
 
 .input:focus {
     outline: none;
-    border-color: #0fef85;
+    border-color: var(--accent);
 }
 
 .errorText {
     width: 100%;
-    color: #ff6273;
+    color: var(--danger);
     font-size: 0.85rem;
     margin-top: -2px;
 }
@@ -44,7 +44,7 @@
     height: 44px;
     border: none;
     border-radius: 10px;
-    background-color: #0fef85;
+    background-color: var(--accent);
     color: #15222a;
     font-size: 1rem;
     font-weight: 800;
@@ -56,16 +56,16 @@
     width: 48px;
     height: 44px;
     border-radius: 10px;
-    border: 1px solid #8a4456;
-    background-color: #32384a;
-    color: #ff6273;
+    border: 1px solid color-mix(in srgb, var(--danger) 55%, transparent);
+    background-color: var(--surface-bg);
+    color: var(--danger);
     font-size: 1.2rem;
     cursor: pointer;
     transition: .3s;
 }
 
 .buttonAdd:hover {
-    background-color: #50f1a6;
+    background-color: var(--accent-hover);
     transition: .3s;
 }
 

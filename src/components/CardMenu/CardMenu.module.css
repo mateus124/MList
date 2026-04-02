@@ -3,19 +3,21 @@
     top: calc(100% + 10px);
     right: 0;
     width: 210px;
-    background-color: #454d62;
-    border: 1px solid #5b647a;
+    background: var(--surface-strong);
+    border: 1px solid var(--surface-border);
     border-radius: 16px;
     padding: 10px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
     z-index: 20;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 .menuItem {
     width: 100%;
     background: transparent;
     border: none;
-    color: #b8c5d1;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     column-gap: 12px;
@@ -27,13 +29,13 @@
 }
 
 .menuItem:hover {
-    background-color: #0fef8635 !important;
+    background-color: color-mix(in srgb, var(--accent) 22%, transparent) !important;
 }
 
 .menuItemDanger {
-    color: #ff6273 !important;
+    color: var(--danger) !important;
 }
 
 .menuItemDanger:hover {
-    background-color: rgba(255, 98, 115, 0.08) !important;
+    background-color: color-mix(in srgb, var(--danger) 16%, transparent) !important;
 }

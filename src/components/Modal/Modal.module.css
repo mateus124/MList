@@ -1,7 +1,7 @@
 .backdrop {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: color-mix(in srgb, #06080f 65%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,8 +19,8 @@
 }
 
 .modal {
-    background-color: #262b3d;
-    border: 1px solid #3d4a59;
+    background: var(--surface-strong);
+    border: 1px solid var(--surface-border);
     border-radius: 12px;
     padding: 28px;
     width: 90%;
@@ -29,6 +29,8 @@
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     animation: slideUp 0.3s ease;
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
 @keyframes slideUp {
@@ -45,7 +47,7 @@
 .title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #d7deea;
+    color: var(--text-primary);
     margin-bottom: 20px;
 }
 

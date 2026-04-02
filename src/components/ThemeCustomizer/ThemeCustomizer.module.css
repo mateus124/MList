@@ -1,0 +1,87 @@
+.floatingButton {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-strong);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 30;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+.panel {
+    position: fixed;
+    left: 20px;
+    bottom: 88px;
+    width: min(360px, calc(100vw - 40px));
+    max-height: min(72vh, 620px);
+    overflow-y: auto;
+    border-radius: 18px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-strong);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
+    padding: 14px;
+    z-index: 30;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+.panel h3 {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.sectionTitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.wallpaperItem {
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface-bg);
+    cursor: pointer;
+    padding: 4px;
+    text-align: left;
+}
+
+.wallpaperItem img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.wallpaperItem span {
+    color: var(--text-primary);
+    display: block;
+    font-size: 0.9rem;
+    padding: 7px 5px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wallpaperItemActive {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+}

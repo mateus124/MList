@@ -5,7 +5,7 @@
 }
 
 .description {
-    color: #b8c5d1;
+    color: var(--text-secondary);
     line-height: 1.5;
     font-size: 0.98rem;
 }
@@ -26,22 +26,22 @@
 }
 
 .buttonConfirm {
-    background-color: #ff6273;
+    background-color: var(--danger);
     color: #1f2430;
     transition: .3s;
 }
 
 .buttonCancel {
-    background-color: #343c4e;
-    color: #b8c5d1;
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
 }
 
 .buttonConfirm:hover {
-    background-color: #ff838f;
+    background-color: var(--danger-hover);
     transition: .3s;
 }
 
 .buttonCancel:hover {
-    background-color: #495265;
+    background-color: var(--surface-strong);
     transition: .3s;
 }

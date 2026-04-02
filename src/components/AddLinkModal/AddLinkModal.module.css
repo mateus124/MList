@@ -13,27 +13,27 @@
 .field label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #a4afbc;
+    color: var(--text-secondary);
 }
 
 .field input {
-    background-color: #3a465299;
-    border: 1px solid #4a5762;
+    background-color: var(--surface-bg);
+    border: 1px solid var(--surface-border);
     border-radius: 8px;
     padding: 12px 14px;
-    color: #d7deea;
+    color: var(--text-primary);
     font-size: 1rem;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .field input::placeholder {
-    color: #687380;
+    color: var(--text-muted);
 }
 
 .field input:focus {
     outline: none;
-    border-color: #0fef85;
-    background-color: #454d5d;
+    border-color: var(--accent);
+    background-color: var(--surface-strong);
 }
 
 .field input.error {
@@ -53,7 +53,7 @@
 
 .buttonAdd {
     flex: 1;
-    background-color: #0fef85;
+    background-color: var(--accent);
     color: #212531;
     border: none;
     padding: 12px 20px;
@@ -65,7 +65,7 @@
 }
 
 .buttonAdd:hover {
-    background-color: #24ff9a;
+    background-color: var(--accent-hover);
     transform: translateY(-1px);
 }
 
@@ -76,8 +76,8 @@
 .buttonCancel {
     flex: 1;
     background-color: transparent;
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
+    color: var(--danger);
+    border: 1px solid var(--danger);
     padding: 12px 20px;
     border-radius: 8px;
     font-size: 1rem;
@@ -87,6 +87,6 @@
 }
 
 .buttonCancel:hover {
-    background-color: #e74c3c;
+    background-color: var(--danger);
     color: #fff;
 }

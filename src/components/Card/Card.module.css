@@ -1,17 +1,19 @@
 .card {
-    background-color: #292e3d80;
-    border: 1px solid #424D58;
+    background: var(--surface-bg);
+    border: 1px solid var(--surface-border);
     border-radius: 12px;
     padding: 15px;
     width: 90%;
-    color: #B8C5D1;
+    color: var(--text-primary);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #4a5762;
+    border-bottom: 1px solid var(--surface-border);
     padding-bottom: 10px;
     margin-top: 5px;
 }
@@ -41,7 +43,7 @@
     justify-content: center;
     background-color: transparent;
     border: none;
-    color: #B8C5D1;
+    color: var(--text-primary);
     cursor: pointer;
     border-radius: 3px;
     padding: 2px;
@@ -49,7 +51,7 @@
 }
 
 .actions button:hover {
-    background-color: #454a5b;
+    background-color: var(--surface-strong);
     transition: .3s;
 }
 

@@ -1,5 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+:root {
+  --text-primary: #d8e2ef;
+  --text-secondary: #9eabbd;
+  --text-muted: #6f7d91;
+  --surface-bg: rgba(34, 41, 56, 0.45);
+  --surface-strong: rgba(34, 41, 56, 0.66);
+  --surface-border: rgba(129, 149, 178, 0.42);
+  --accent: #0fef85;
+  --accent-hover: #24ff9a;
+  --danger: #ff6273;
+  --danger-hover: #ff8a97;
+  --app-overlay: rgba(11, 16, 27, 0.58);
+  --app-bg-image: radial-gradient(circle at 10% 10%, #2a3146 0%, #1c2231 60%, #151a27 100%);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,7 +22,11 @@
 }
 
 body {
-  background-color: #212531;
-  color: #8F9AA7;
+  background-image: linear-gradient(var(--app-overlay), var(--app-overlay)), var(--app-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--text-secondary);
   padding: 20px;
+  min-height: 100vh;
 }

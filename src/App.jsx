@@ -2,7 +2,9 @@ import './App.css'
 import { useEffect } from 'react';
 import Header from './components/Header/Header';
 import Column from './components/Column/Column';
+import ThemeCustomizer from './components/ThemeCustomizer/ThemeCustomizer';
 import useLocalStorage from './hooks/useLocalStorage';
+import { applyThemeFromSettings, DEFAULT_THEME_SETTINGS, WALLPAPERS } from './theme/themeConfig';
 
 function App() {
   const defaultTabs = [{ id: 'tab-home', title: 'Home' }];
@@ -10,6 +12,7 @@ function App() {
 
   const { data: tabs, saveToStorage: saveTabs } = useLocalStorage('mlist_tabs', defaultTabs);
   const { data: activeTabId, saveToStorage: saveActiveTabId } = useLocalStorage('mlist_active_tab_id', defaultTabs[0].id);
+  const { data: themeSettings, saveToStorage: saveThemeSettings } = useLocalStorage('mlist_theme_settings', DEFAULT_THEME_SETTINGS);
 
   useEffect(() => {
     if (!tabs.length) {
@@ -114,6 +117,20 @@ function App() {
     return true;
   };
 
+  useEffect(() => {
+    let isCancelled = false;
+
+    const applyTheme = async () => {
+      await applyThemeFromSettings(themeSettings, () => isCancelled);
+    };
+
+    applyTheme();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [themeSettings]);
+
   return (
     <div>
       <Header
@@ -132,6 +149,12 @@ function App() {
           />
         ))}
       </div>
+
+      <ThemeCustomizer
+        settings={themeSettings}
+        wallpapers={WALLPAPERS}
+        onChangeSettings={saveThemeSettings}
+      />
     </div>
   )
 }
