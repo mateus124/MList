@@ -2,7 +2,7 @@ import { TbEdit } from 'react-icons/tb';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
 import styles from './CardItem.module.css';
 
-const CardItem = ({ label, href = '#' }) => {
+const CardItem = ({ label, href = '#', onEdit, onDelete }) => {
     const getFaviconUrl = (url) => {
         try {
             const domain = new URL(url).hostname;
@@ -30,10 +30,10 @@ const CardItem = ({ label, href = '#' }) => {
                 <span className={styles.label}>{label}</span>
             </a>
             <div className={styles.actions}>
-                <button className={styles.actionBtn} title="Editar">
+                <button className={styles.actionBtn} title="Editar" onClick={onEdit}>
                     <TbEdit size={18} />
                 </button>
-                <button className={styles.actionBtn} title="Deletar">
+                <button className={styles.actionBtn} title="Deletar" onClick={onDelete}>
                     <MdOutlineDeleteOutline size={18} />
                 </button>
             </div>

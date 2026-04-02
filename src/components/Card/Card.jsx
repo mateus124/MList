@@ -9,12 +9,28 @@ import styles from './Card.module.css';
 
 const Card = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingIndex, setEditingIndex] = useState(null);
     const { data: links, saveToStorage } = useLocalStorage('mlist_tech_links');
 
-    const handleAddLink = (newLink) => {
-        const updatedLinks = [...links, { label: newLink.title, href: newLink.url }];
-        saveToStorage(updatedLinks);
+    const closeModal = () => {
         setIsModalOpen(false);
+        setEditingIndex(null);
+    };
+
+    const handleSubmitLink = (newLink) => {
+        const normalizedLink = { label: newLink.title, href: newLink.url };
+        const updatedLinks =
+            editingIndex === null
+                ? [...links, normalizedLink]
+                : links.map((link, index) => (index === editingIndex ? normalizedLink : link));
+
+        saveToStorage(updatedLinks);
+        closeModal();
+    };
+
+    const handleDeleteLink = (indexToDelete) => {
+        const updatedLinks = links.filter((_, index) => index !== indexToDelete);
+        saveToStorage(updatedLinks);
     };
 
     return (
@@ -25,7 +41,10 @@ const Card = () => {
                     <div className={styles.actions}>
                         <button 
                             title="Adicionar Link"
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => {
+                                setEditingIndex(null);
+                                setIsModalOpen(true);
+                            }}
                         >
                             <TbLinkPlus size={20}/>
                         </button>
@@ -38,6 +57,11 @@ const Card = () => {
                             key={index}
                             label={link.label} 
                             href={link.href} 
+                            onEdit={() => {
+                                setEditingIndex(index);
+                                setIsModalOpen(true);
+                            }}
+                            onDelete={() => handleDeleteLink(index)}
                         />
                     ))}
                 </div>
@@ -45,13 +69,22 @@ const Card = () => {
 
             <Modal 
                 isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)}
-                title="Adicionar Link"
+                onClose={closeModal}
+                title={editingIndex === null ? "Adicionar Link" : "Editar Link"}
             >
                 <AddLinkModal 
                     isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onAddLink={handleAddLink}
+                    onClose={closeModal}
+                    onAddLink={handleSubmitLink}
+                    initialData={
+                        editingIndex === null
+                            ? { url: '', title: '' }
+                            : {
+                                url: links[editingIndex]?.href ?? '',
+                                title: links[editingIndex]?.label ?? '',
+                            }
+                    }
+                    submitLabel={editingIndex === null ? 'Adicionar' : 'Salvar'}
                 />
             </Modal>
         </>

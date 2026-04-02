@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './AddLinkModal.module.css';
 
-const AddLinkModal = ({ isOpen, onClose, onAddLink }) => {
+const AddLinkModal = ({
+    isOpen,
+    onClose,
+    onAddLink,
+    initialData = { url: '', title: '' },
+    submitLabel = 'Adicionar',
+}) => {
     const [formData, setFormData] = useState({
         url: '',
         title: '',
     });
 
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        setFormData({
+            url: initialData.url ?? '',
+            title: initialData.title ?? '',
+        });
+        setErrors({});
+    }, [isOpen, initialData.url, initialData.title]);
 
 
     const suggestTitleFromUrl = (url) => {
@@ -68,9 +84,6 @@ const AddLinkModal = ({ isOpen, onClose, onAddLink }) => {
             url: formData.url,
             title: formData.title,
         });
-
-        setFormData({ url: '', title: '' });
-        setErrors({});
     };
 
     const handleCancel = () => {
@@ -114,7 +127,7 @@ const AddLinkModal = ({ isOpen, onClose, onAddLink }) => {
                     type="submit"
                     className={styles.buttonAdd}
                 >
-                    Adicionar
+                    {submitLabel}
                 </button>
                 <button
                     type="button"
