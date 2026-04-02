@@ -1,0 +1,116 @@
+.header {
+    display: flex;
+    width: 71%;
+    box-sizing: border-box;
+    padding: 0px 10px;
+    border-bottom: 1px solid #424D58;
+    align-items: center;
+    column-gap: 14px;
+    padding-bottom: 20px;
+    margin: 0px auto;
+    margin-top: 5px;
+}
+
+.tabsArea {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.nav {
+    display: flex;
+    column-gap: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+    flex: 1;
+    scroll-behavior: smooth;
+}
+
+.nav::-webkit-scrollbar {
+    display: none;
+}
+
+.button {
+    color: #212531;
+    background-color: #0FEF85;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .3s;
+    flex-shrink: 0;
+}
+
+.button:hover {
+    background-color: #24FF9A;
+    transition: .3s;
+}
+
+.buttonadd {
+    background-color: #3a465299;
+    color: #8F9AA7;
+    border: 1px solid #4a5762;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 5px;
+    transition: .3s;
+    flex-shrink: 0;
+}
+
+.buttonadd:hover {
+    transition: .3s;
+    background-color: #0FEF85;
+    box-shadow: 0px 0px 8px #0fef8649;
+    color: #212531;
+}
+
+.navControl {
+    background-color: #3a465299;
+    color: #8F9AA7;
+    border: 1px solid #4a5762;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 5px 8px;
+    transition: .3s;
+    font-weight: 700;
+    min-width: 30px;
+    flex-shrink: 0;
+}
+
+.navControl:hover:not(:disabled) {
+    transition: .3s;
+    background-color: #0FEF85;
+    box-shadow: 0px 0px 8px #0fef8649;
+    color: #212531;
+}
+
+.navControl:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+    .header {
+        padding-inline: 12px;
+        column-gap: 10px;
+    }
+
+    .nav {
+        column-gap: 10px;
+    }
+
+    .button {
+        padding: 9px 14px;
+    }
+}
