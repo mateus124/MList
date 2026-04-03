@@ -3,7 +3,7 @@ import AddNewCard from '../AddNewCard/AddNewCard';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import styles from './Column.module.css';
 
-const Column = ({ columnId }) => {
+const Column = ({ columnId, openLinksInNewTab = false }) => {
     const storageKey = `mlist_${columnId}_cards`;
     const { data: cards, saveToStorage, removeFromStorage } = useLocalStorage(storageKey, []);
 
@@ -61,6 +61,7 @@ const Column = ({ columnId }) => {
                         cardId={card.id}
                         title={card.title}
                         columnId={columnId}
+                        openLinksInNewTab={openLinksInNewTab}
                         onRenameBoard={(nextTitle) => handleRenameCard(card.id, nextTitle)}
                         onDeleteBoard={() => handleDeleteCard(card.id)}
                     />

@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { HiOutlinePhoto } from 'react-icons/hi2';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { MdOutlineSettings } from 'react-icons/md';
+import SettingsModal from '../SettingsModal/SettingsModal';
 import styles from './ThemeCustomizer.module.css';
 
-const ThemeCustomizer = ({ settings, themes, onChangeSettings, onCreateTheme, onDeleteTheme, activeTheme }) => {
+const ThemeCustomizer = ({ settings, themes, appSettings, onChangeSettings, onChangeAppSettings, onCreateTheme, onDeleteTheme, activeTheme }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [themeTitle, setThemeTitle] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isCreatingTheme, setIsCreatingTheme] = useState(false);
@@ -12,6 +15,7 @@ const ThemeCustomizer = ({ settings, themes, onChangeSettings, onCreateTheme, on
     const [hoveredThemeId, setHoveredThemeId] = useState(null);
     const panelRef = useRef(null);
     const buttonRef = useRef(null);
+    const settingsRef = useRef(null);
     const fileInputRef = useRef(null);
 
     const selectedWallpaper = useMemo(
@@ -76,9 +80,13 @@ const ThemeCustomizer = ({ settings, themes, onChangeSettings, onCreateTheme, on
         const handleOutsideClick = (event) => {
             const clickedOnPanel = panelRef.current?.contains(event.target);
             const clickedOnButton = buttonRef.current?.contains(event.target);
+            const clickedOnSettings = settingsRef.current?.contains(event.target);
 
             if (!clickedOnPanel && !clickedOnButton) {
                 setIsOpen(false);
+            }
+            if (!clickedOnSettings) {
+                // Don't close settings here, let the modal handle outside clicks
             }
         };
 
@@ -88,15 +96,33 @@ const ThemeCustomizer = ({ settings, themes, onChangeSettings, onCreateTheme, on
 
     return (
         <>
-            <button
-                ref={buttonRef}
-                type="button"
-                className={styles.floatingButton}
-                onClick={() => setIsOpen((current) => !current)}
-                title="Personalizar tema"
-            >
-                <HiOutlinePhoto size={24} />
-            </button>
+            <div className={styles.buttonGroup}>
+                <button
+                    ref={buttonRef}
+                    type="button"
+                    className={styles.floatingButton}
+                    onClick={() => setIsOpen((current) => !current)}
+                    title="Personalizar tema"
+                >
+                    <HiOutlinePhoto size={24} />
+                </button>
+                <button
+                    ref={settingsRef}
+                    type="button"
+                    className={styles.floatingButton}
+                    onClick={() => setIsSettingsOpen((current) => !current)}
+                    title="Configurações"
+                >
+                    <MdOutlineSettings size={24} />
+                </button>
+            </div>
+
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                settings={appSettings}
+                onChangeSettings={onChangeAppSettings}
+            />
 
             {isOpen && (
                 <aside ref={panelRef} className={styles.panel}>

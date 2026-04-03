@@ -1,0 +1,87 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.modal {
+    background: var(--surface-strong);
+    border: 1px solid var(--surface-border);
+    border-radius: 16px;
+    max-width: 400px;
+    width: min(90vw, 400px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.header h2 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.closeBtn:hover {
+    color: var(--text-primary);
+    background-color: var(--surface-bg);
+}
+
+.content {
+    padding: 20px;
+    overflow-y: auto;
+    display: grid;
+    gap: 12px;
+}
+
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.settingLabel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.settingLabel span {
+    font-size: 0.95rem;
+}
+
+.setting:hover {
+    color: var(--text-primary);
+}

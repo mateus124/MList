@@ -15,6 +15,7 @@ function App() {
   const { data: activeTabId, saveToStorage: saveActiveTabId } = useLocalStorage('mlist_active_tab_id', defaultTabs[0].id);
   const { data: themeSettings, saveToStorage: saveThemeSettings } = useLocalStorage('mlist_theme_settings', DEFAULT_THEME_SETTINGS);
   const { data: customThemeMeta, saveToStorage: saveCustomThemeMeta } = useLocalStorage('mlist_custom_themes', []);
+  const { data: appSettings, saveToStorage: saveAppSettings } = useLocalStorage('mlist_app_settings', { openLinksInNewTab: false });
   const [customWallpapers, setCustomWallpapers] = useState([]);
 
   useEffect(() => {
@@ -246,6 +247,7 @@ function App() {
           <Column
             key={`${activeTab?.id ?? 'tab-home'}_${columnId}`}
             columnId={`${activeTab?.id ?? 'tab-home'}_${columnId}`}
+            openLinksInNewTab={appSettings.openLinksInNewTab}
           />
         ))}
       </div>
@@ -253,7 +255,9 @@ function App() {
       <ThemeCustomizer
         settings={themeSettings}
         themes={allThemes}
+        appSettings={appSettings}
         onChangeSettings={saveThemeSettings}
+        onChangeAppSettings={saveAppSettings}
         onCreateTheme={handleCreateCustomTheme}
         onDeleteTheme={handleDeleteCustomTheme}
         activeTheme={activeTheme}

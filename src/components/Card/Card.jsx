@@ -10,7 +10,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import styles from './Card.module.css';
 
-const Card = ({ title, cardId, columnId, onRenameBoard, onDeleteBoard }) => {
+const Card = ({ title, cardId, columnId, openLinksInNewTab = false, onRenameBoard, onDeleteBoard }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingIndex, setEditingIndex] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -120,7 +120,8 @@ const Card = ({ title, cardId, columnId, onRenameBoard, onDeleteBoard }) => {
                         <CardItem 
                             key={index}
                             label={link.label} 
-                            href={link.href} 
+                            href={link.href}
+                            openInNewTab={openLinksInNewTab}
                             onEdit={() => {
                                 setEditingIndex(index);
                                 setIsModalOpen(true);

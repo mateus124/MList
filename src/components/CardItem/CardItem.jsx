@@ -2,7 +2,7 @@ import { TbEdit } from 'react-icons/tb';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
 import styles from './CardItem.module.css';
 
-const CardItem = ({ label, href = '#', onEdit, onDelete }) => {
+const CardItem = ({ label, href = '#', onEdit, onDelete, openInNewTab = false }) => {
     const getFaviconUrl = (url) => {
         try {
             const domain = new URL(url).hostname;
@@ -14,9 +14,16 @@ const CardItem = ({ label, href = '#', onEdit, onDelete }) => {
 
     const faviconUrl = getFaviconUrl(href);
 
+    const handleLinkClick = (event) => {
+        if (openInNewTab) {
+            event.preventDefault();
+            window.open(href, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     return (
         <div className={styles.item}>
-            <a href={href} rel="noreferrer" className={styles.link}>
+            <a href={href} rel="noreferrer" className={styles.link} onClick={handleLinkClick}>
                 {faviconUrl && (
                     <img 
                         src={faviconUrl} 
