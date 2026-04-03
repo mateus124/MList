@@ -1,0 +1,47 @@
+.toggleLabel {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    width: 56px;
+    height: 32px;
+}
+
+.input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background-color: var(--surface-border);
+    border-radius: 999px;
+    transition: background-color 0.3s ease;
+    border: 2px solid var(--surface-border);
+}
+
+.slider::before {
+    content: '';
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.input:checked + .slider {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.input:checked + .slider::before {
+    transform: translateX(24px);
+}
+
+.input:disabled + .slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

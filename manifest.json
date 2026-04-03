@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MList",
-  "version": "1.0.0",
-  "description": "Dashboard de links para produtividade em sua nova aba do Chrome",
+  "version": "1.1.0",
+  "description": "Dashboard de links para produtividade em sua nova aba",
   "permissions": [
     "storage"
   ],

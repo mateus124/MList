@@ -1,7 +1,14 @@
-.floatingButton {
+.buttonGroup {
     position: fixed;
     left: 20px;
     bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 30;
+}
+
+.floatingButton {
     width: 56px;
     height: 56px;
     border-radius: 999px;
@@ -12,9 +19,14 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 30;
     backdrop-filter: blur(16px) saturate(140%);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.floatingButton:hover {
+    background: var(--surface-strong);
+    border-color: var(--accent);
 }
 
 .panel {
@@ -40,6 +52,12 @@
     margin-bottom: 10px;
 }
 
+.activeThemeLabel {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
 .sectionTitle {
     color: var(--text-secondary);
     font-size: 0.95rem;
@@ -55,13 +73,25 @@
 }
 
 .wallpaperItem {
+    position: relative;
     border: 1px solid var(--surface-border);
     border-radius: 12px;
     overflow: hidden;
     background: var(--surface-bg);
-    cursor: pointer;
     padding: 4px;
     text-align: left;
+}
+
+.wallpaperButton {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    display: grid;
+    gap: 4px;
 }
 
 .wallpaperItem img {
@@ -84,4 +114,85 @@
 .wallpaperItemActive {
     border-color: var(--accent);
     box-shadow: 0 0 0 1px var(--accent);
+}
+
+.deleteBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.deleteBtn:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+.formSection {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--surface-border);
+}
+
+.createForm {
+    display: grid;
+    gap: 12px;
+}
+
+.fieldLabel {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: grid;
+    gap: 8px;
+}
+
+.fieldLabel input {
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    background: var(--surface-bg);
+    color: var(--text-primary);
+    padding: 12px 12px;
+    outline: none;
+}
+
+.fieldLabel input::file-selector-button {
+    margin-right: 12px;
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: var(--accent);
+    color: #091017;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fileName,
+.formMessage {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.createButton {
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #091017;
+    font-weight: 800;
+    padding: 12px 14px;
+    cursor: pointer;
+}
+
+.createButton:disabled {
+    opacity: 0.7;
+    cursor: wait;
 }
