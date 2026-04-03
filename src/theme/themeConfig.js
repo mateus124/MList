@@ -4,22 +4,27 @@ export const WALLPAPERS = [
     name: 'Padrao',
     url: '/icone.png',
     fallbackPalette: { base: { r: 33, g: 37, b: 49 }, accent: { r: 15, g: 239, b: 133 } },
+    kind: 'preset',
   },
   {
     id: 'tema-sky',
     name: 'Sky Blue',
     url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1400&q=80',
     fallbackPalette: { base: { r: 32, g: 45, b: 70 }, accent: { r: 83, g: 185, b: 255 } },
+    kind: 'preset',
   },
   {
     id: 'tema-porsche-gt3-rs',
     name: 'Porsche GT3 RS',
     url: 'https://images.unsplash.com/photo-1634673970798-a15ae56f6c65?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     fallbackPalette: { base: { r: 34, g: 37, b: 42 }, accent: { r: 243, g: 146, b: 32 } },
+    kind: 'preset',
   },
 ];
 
-export const DEFAULT_THEME_SETTINGS = { wallpaperId: WALLPAPERS[0].id };
+export const DEFAULT_THEME_SETTINGS = { themeId: WALLPAPERS[0].id };
+
+export const DEFAULT_CUSTOM_THEME_PALETTE = WALLPAPERS[0].fallbackPalette;
 
 const toRgba = (color, alpha) => `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
 
@@ -103,6 +108,18 @@ const extractPaletteFromImage = (imageUrl, fallbackPalette) => new Promise((reso
   image.src = imageUrl;
 });
 
+export const extractPaletteFromFile = async (file, fallbackPalette = DEFAULT_CUSTOM_THEME_PALETTE) => {
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    return await extractPaletteFromImage(objectUrl, fallbackPalette);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+};
+
+export const getThemeById = (themes, themeId) => themes.find((item) => item.id === themeId) ?? WALLPAPERS[0];
+
 const applyDefaultTheme = () => {
   const root = document.documentElement;
   root.setAttribute('data-theme-mode', 'default');
@@ -120,15 +137,19 @@ const applyDefaultTheme = () => {
   root.style.setProperty('--app-bg-image', 'linear-gradient(#212531, #212531)');
 };
 
-export const applyThemeFromSettings = async (themeSettings, isCancelled = () => false) => {
-  const wallpaper = WALLPAPERS.find((item) => item.id === themeSettings.wallpaperId) ?? WALLPAPERS[0];
+export const applyThemeFromSettings = async (themeSettings, themes = WALLPAPERS, isCancelled = () => false) => {
+  const themeId = themeSettings.themeId ?? themeSettings.wallpaperId ?? WALLPAPERS[0].id;
+  const wallpaper = getThemeById(themes, themeId);
 
   if (wallpaper.id === 'tema-padrao') {
     applyDefaultTheme();
     return;
   }
 
-  const palette = await extractPaletteFromImage(wallpaper.url, wallpaper.fallbackPalette);
+  const palette = wallpaper.kind === 'custom'
+    ? wallpaper.palette ?? DEFAULT_CUSTOM_THEME_PALETTE
+    : await extractPaletteFromImage(wallpaper.url, wallpaper.fallbackPalette);
+
   if (isCancelled()) return;
 
   const root = document.documentElement;
