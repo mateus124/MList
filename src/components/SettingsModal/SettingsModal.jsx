@@ -3,7 +3,7 @@ import { MdClose } from 'react-icons/md';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import styles from './SettingsModal.module.css';
 
-const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings }) => {
+const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings, appVersion }) => {
     const modalRef = useRef(null);
 
     useEffect(() => {
@@ -53,7 +53,21 @@ const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings }) => {
                             onChange={() => handleToggle('openLinksInNewTab')}
                         />
                     </label>
+
+                    <label className={styles.setting}>
+                        <div className={styles.settingLabel}>
+                            <span>Avisar sobre novas versoes</span>
+                        </div>
+                        <ToggleSwitch
+                            checked={settings.showUpdateNotifications ?? true}
+                            onChange={() => handleToggle('showUpdateNotifications')}
+                        />
+                    </label>
                 </div>
+
+                <footer className={styles.footer}>
+                    <span>Versao atual: v{appVersion}</span>
+                </footer>
             </div>
         </div>
     );

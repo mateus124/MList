@@ -5,7 +5,7 @@ import { MdOutlineSettings } from 'react-icons/md';
 import SettingsModal from '../SettingsModal/SettingsModal';
 import styles from './ThemeCustomizer.module.css';
 
-const ThemeCustomizer = ({ settings, themes, appSettings, onChangeSettings, onChangeAppSettings, onCreateTheme, onDeleteTheme, activeTheme }) => {
+const ThemeCustomizer = ({ settings, themes, appSettings, onChangeSettings, onChangeAppSettings, onCreateTheme, onDeleteTheme, activeTheme, appVersion }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [themeTitle, setThemeTitle] = useState('');
@@ -122,6 +122,7 @@ const ThemeCustomizer = ({ settings, themes, appSettings, onChangeSettings, onCh
                 onClose={() => setIsSettingsOpen(false)}
                 settings={appSettings}
                 onChangeSettings={onChangeAppSettings}
+                appVersion={appVersion}
             />
 
             {isOpen && (

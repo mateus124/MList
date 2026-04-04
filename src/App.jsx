@@ -3,9 +3,42 @@ import { useEffect, useMemo, useState } from 'react';
 import Header from './components/Header/Header';
 import Column from './components/Column/Column';
 import ThemeCustomizer from './components/ThemeCustomizer/ThemeCustomizer';
+import UpdateNotice from './components/UpdateNotice/UpdateNotice';
 import useLocalStorage from './hooks/useLocalStorage';
 import { getThemeById, applyThemeFromSettings, DEFAULT_THEME_SETTINGS, WALLPAPERS, extractPaletteFromFile } from './theme/themeConfig';
 import { deleteThemeImage, getThemeImage, saveThemeImage } from './theme/themeImageStorage';
+
+const DEFAULT_APP_SETTINGS = {
+  openLinksInNewTab: false,
+  showUpdateNotifications: true,
+  dismissedUpdateVersion: null,
+};
+
+const RELEASES_API_URL = 'https://api.github.com/repos/mateus124/MList/releases/latest';
+const RELEASES_PAGE_URL = 'https://github.com/mateus124/MList/releases/latest';
+
+const parseVersion = (version) => String(version ?? '')
+  .trim()
+  .replace(/^v/i, '')
+  .split('.')
+  .map((segment) => Number(segment));
+
+const isVersionGreater = (left, right) => {
+  const [leftMajor = 0, leftMinor = 0, leftPatch = 0] = parseVersion(left);
+  const [rightMajor = 0, rightMinor = 0, rightPatch = 0] = parseVersion(right);
+
+  if (leftMajor !== rightMajor) return leftMajor > rightMajor;
+  if (leftMinor !== rightMinor) return leftMinor > rightMinor;
+  return leftPatch > rightPatch;
+};
+
+const getCurrentAppVersion = () => {
+  if (typeof chrome !== 'undefined' && chrome.runtime?.getManifest) {
+    return chrome.runtime.getManifest().version;
+  }
+
+  return 'dev';
+};
 
 function App() {
   const defaultTabs = [{ id: 'tab-home', title: 'Home' }];
@@ -15,8 +48,19 @@ function App() {
   const { data: activeTabId, saveToStorage: saveActiveTabId } = useLocalStorage('mlist_active_tab_id', defaultTabs[0].id);
   const { data: themeSettings, saveToStorage: saveThemeSettings } = useLocalStorage('mlist_theme_settings', DEFAULT_THEME_SETTINGS);
   const { data: customThemeMeta, saveToStorage: saveCustomThemeMeta } = useLocalStorage('mlist_custom_themes', []);
-  const { data: appSettings, saveToStorage: saveAppSettings } = useLocalStorage('mlist_app_settings', { openLinksInNewTab: false });
+  const {
+    data: appSettingsData,
+    saveToStorage: saveAppSettings,
+    isLoaded: isAppSettingsLoaded,
+  } = useLocalStorage('mlist_app_settings', DEFAULT_APP_SETTINGS);
   const [customWallpapers, setCustomWallpapers] = useState([]);
+  const [appVersion, setAppVersion] = useState(getCurrentAppVersion);
+  const [availableUpdateVersion, setAvailableUpdateVersion] = useState(null);
+
+  const appSettings = useMemo(
+    () => ({ ...DEFAULT_APP_SETTINGS, ...(appSettingsData ?? {}) }),
+    [appSettingsData],
+  );
 
   useEffect(() => {
     if (!tabs.length) {
@@ -77,6 +121,10 @@ function App() {
 
   const handleSelectTab = (tabId) => {
     saveActiveTabId(tabId);
+  };
+
+  const handleChangeAppSettings = (nextSettings) => {
+    saveAppSettings({ ...DEFAULT_APP_SETTINGS, ...nextSettings });
   };
 
   const handleAddTab = (title) => {
@@ -232,6 +280,85 @@ function App() {
 
   const activeTheme = getThemeById(allThemes, themeSettings.themeId ?? themeSettings.wallpaperId ?? WALLPAPERS[0].id);
 
+  useEffect(() => {
+    setAppVersion(getCurrentAppVersion());
+  }, []);
+
+  useEffect(() => {
+    if (!isAppSettingsLoaded || !appSettings.showUpdateNotifications) {
+      setAvailableUpdateVersion(null);
+      return;
+    }
+
+    let isCancelled = false;
+
+    const checkForUpdates = async () => {
+      try {
+        const response = await fetch(RELEASES_API_URL);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const latestVersion = String(data.tag_name ?? '').replace(/^v/i, '');
+        const currentVersion = getCurrentAppVersion();
+
+        if (!latestVersion || !isVersionGreater(latestVersion, currentVersion)) {
+          if (!isCancelled) {
+            setAvailableUpdateVersion(null);
+          }
+          return;
+        }
+
+        if (appSettings.dismissedUpdateVersion === latestVersion) {
+          return;
+        }
+
+        if (!isCancelled) {
+          setAvailableUpdateVersion(latestVersion);
+        }
+      } catch (error) {
+        console.error('Erro ao verificar atualizacoes:', error);
+      }
+    };
+
+    checkForUpdates();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    appSettings.dismissedUpdateVersion,
+    appSettings.showUpdateNotifications,
+    isAppSettingsLoaded,
+  ]);
+
+  useEffect(() => {
+    if (!availableUpdateVersion) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setAvailableUpdateVersion(null);
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [availableUpdateVersion]);
+
+  const handleDismissUpdateNotice = () => {
+    setAvailableUpdateVersion(null);
+
+    if (!appSettings.showUpdateNotifications || !availableUpdateVersion) {
+      return;
+    }
+
+    handleChangeAppSettings({
+      ...appSettings,
+      dismissedUpdateVersion: availableUpdateVersion,
+    });
+  };
+
+  const handleUpdateNow = () => {
+    handleDismissUpdateNotice();
+    window.open(RELEASES_PAGE_URL, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div>
       <Header
@@ -257,10 +384,17 @@ function App() {
         themes={allThemes}
         appSettings={appSettings}
         onChangeSettings={saveThemeSettings}
-        onChangeAppSettings={saveAppSettings}
+        onChangeAppSettings={handleChangeAppSettings}
         onCreateTheme={handleCreateCustomTheme}
         onDeleteTheme={handleDeleteCustomTheme}
         activeTheme={activeTheme}
+        appVersion={appVersion}
+      />
+
+      <UpdateNotice
+        latestVersion={availableUpdateVersion}
+        onDismiss={handleDismissUpdateNotice}
+        onUpdateNow={handleUpdateNow}
       />
     </div>
   )
