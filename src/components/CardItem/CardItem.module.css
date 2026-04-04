@@ -7,6 +7,11 @@
     transition: background-color 0.2s ease;
 }
 
+.dragging {
+    opacity: 0.6;
+    background-color: var(--surface-strong);
+}
+
 .item:hover {
     background-color: var(--surface-strong);
 }

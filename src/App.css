@@ -12,3 +12,32 @@
 .columns > * {
     min-width: 0;
 }
+
+.dragLinkOverlay {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 200px;
+    max-width: 320px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-strong);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+.dragLinkOverlayLabel {
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dragLinkOverlayHref {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
