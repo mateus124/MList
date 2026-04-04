@@ -1,0 +1,60 @@
+name: Build and Release Extension
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 1. Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 2. Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 3. Instalar dependências
+        run: npm install
+
+      - name: 4. Atualizar versão (MINOR)
+        id: version
+        run: node scripts/version.js >> $GITHUB_OUTPUT
+
+      - name: 5. Build
+        run: npm run build
+
+      - name: 6. Zip da extensão
+        run: |
+          cd dist
+          zip -r mlist-dist.zip .
+
+      - name: 7. Criar Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          files: dist/mlist-dist.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 8. Commit da versão no manifest
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add public/manifest.json
+          if git diff --cached --quiet; then
+            echo "Sem mudanças para commit."
+          else
+            git commit -m "chore: bump manifest version to ${{ steps.version.outputs.version }} [skip ci]"
+            git push
+          fi
