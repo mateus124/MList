@@ -12,11 +12,15 @@ O foco do projeto é oferecer uma experiência simples e rápida para organizar 
 
 - Substitui a página de nova aba de navegadores Chromium por uma interface personalizada
 - Organização de links em boards/categorias
+- Drag and drop de cards entre colunas e dentro da mesma coluna
+- Drag and drop de links dentro do card e entre cards diferentes
+- Preview visual de inserção durante drag and drop
 - Criação de temas personalizados com upload de imagem
 - Extração automática de paleta de cores dos temas
 - Opção de abrir links em nova guia (configurável)
 - Estrutura visual baseada em cards
-- Persistência local de dados com `chrome.storage.local` e `IndexedDB`
+- Persistência local de dados com `chrome.storage.local`/`localStorage` e `IndexedDB`
+- Migração automática de dados legados para o novo formato de board por aba
 - Interface pensada para acesso rápido aos links mais utilizados
 
 ## Tecnologias Utilizadas
@@ -24,15 +28,17 @@ O foco do projeto é oferecer uma experiência simples e rápida para organizar 
 - **React**
 - **Vite**
 - **JavaScript (ES6+)**
+- **dnd-kit** para drag and drop (`@dnd-kit/core` e `@dnd-kit/sortable`)
 - **Chrome Extensions API**
 - **chrome.storage.local** para armazenamento local
+- **IndexedDB** para imagens de temas customizados
 - **CSS Modules** para estilização de componentes
 
 ## Como Rodar o Projeto Localmente 🚀
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) (versão 18 ou superior recomendada)
+- [Node.js](https://nodejs.org/) (versão 20.19 ou superior)
 - npm (geralmente instalado junto com o Node.js)
 - Navegador Chromium (Chrome, Edge, Brave, Vivaldi, etc.)
 
@@ -41,13 +47,13 @@ O foco do projeto é oferecer uma experiência simples e rápida para organizar 
 1. Clone o repositório:
 
 ```bash
-git clone 
+git clone <URL_DO_REPOSITORIO>
 ```
 
 2. Acesse a pasta do projeto:
 
 ```bash
-cd Mlist
+cd MList
 ```
 
 3. Instale as dependências:
@@ -89,6 +95,15 @@ Após o build, os arquivos otimizados serão gerados na pasta `dist/`.
 1. Abra uma nova aba no navegador
 2. Verifique se o dashboard do MList está sendo exibido
 3. Teste criação/edição dos cards, temas personalizados e persistência dos links
+
+## Migração de Dados
+
+As versões atuais migraram o formato de persistência para um modelo unificado por aba.
+
+- A migração é automática ao abrir cada aba
+- Os dados antigos (formato legado) sao lidos e convertidos para o novo formato
+- As chaves legadas nao sao removidas durante a migracao, reduzindo risco de perda de dados
+- Em caso de falha de escrita no storage, os dados antigos permanecem disponiveis
 
 ## Instalação pela Release
 
@@ -172,7 +187,6 @@ git push origin feat/minha-melhoria
 
 ## Roadmap (Possíveis Melhorias Futuras) 
 
-- [ ] Suporte a arrastar e soltar (drag and drop) para reordenar cards e links
 - [ ] Busca rápida global de links
 - [ ] Importação e exportação de dados (JSON)
 - [ ] Sincronização opcional entre dispositivos (quando aplicável)
