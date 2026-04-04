@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { CSS } from '@dnd-kit/utilities';
+import { useSortable, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TbLinkPlus } from "react-icons/tb";
 import { CiMenuKebab } from "react-icons/ci";
 import CardItem from '../CardItem/CardItem';
@@ -7,18 +9,48 @@ import AddLinkModal from '../AddLinkModal/AddLinkModal';
 import CardMenu from '../CardMenu/CardMenu';
 import BoardTitleModal from '../BoardTitleModal/BoardTitleModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import useLocalStorage from '../../hooks/useLocalStorage';
 import styles from './Card.module.css';
 
-const Card = ({ title, cardId, columnId, openLinksInNewTab = false, onRenameBoard, onDeleteBoard }) => {
+const Card = ({
+    card,
+    columnId,
+    openLinksInNewTab = false,
+    onRenameBoard,
+    onDeleteBoard,
+    onAddLink,
+    onUpdateLink,
+    onDeleteLink,
+    itemDropIndicator,
+}) => {
+    const { id: cardId, title, links = [] } = card;
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingIndex, setEditingIndex] = useState(null);
+    const [editingItemId, setEditingItemId] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditBoardOpen, setIsEditBoardOpen] = useState(false);
     const [isDeleteBoardOpen, setIsDeleteBoardOpen] = useState(false);
     const menuRef = useRef(null);
-    const linksStorageKey = `mlist_${columnId}_${cardId}_links`;
-    const { data: links, saveToStorage } = useLocalStorage(linksStorageKey, []);
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
+        id: `card:${cardId}`,
+        data: {
+            type: 'card',
+            cardId,
+            columnId,
+        },
+    });
+
+    const sortableItemIds = links.map((link) => `item:${link.id}`);
+
+    const cardStyle = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
@@ -33,23 +65,20 @@ const Card = ({ title, cardId, columnId, openLinksInNewTab = false, onRenameBoar
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setEditingIndex(null);
+        setEditingItemId(null);
     };
 
     const handleSubmitLink = (newLink) => {
-        const normalizedLink = { label: newLink.title, href: newLink.url };
-        const updatedLinks =
-            editingIndex === null
-                ? [...links, normalizedLink]
-                : links.map((link, index) => (index === editingIndex ? normalizedLink : link));
-
-        saveToStorage(updatedLinks);
+        if (editingItemId === null) {
+            onAddLink?.(newLink);
+        } else {
+            onUpdateLink?.(editingItemId, newLink);
+        }
         closeModal();
     };
 
-    const handleDeleteLink = (indexToDelete) => {
-        const updatedLinks = links.filter((_, index) => index !== indexToDelete);
-        saveToStorage(updatedLinks);
+    const handleDeleteLink = (itemId) => {
+        onDeleteLink?.(itemId);
     };
 
     const handleOpenAllLinks = () => {
@@ -84,16 +113,30 @@ const Card = ({ title, cardId, columnId, openLinksInNewTab = false, onRenameBoar
         setIsMenuOpen(true);
     };
 
+    const isDropBeforeItem = (itemId) => (
+        itemDropIndicator?.overItemId === itemId &&
+        itemDropIndicator?.activeItemId !== itemId
+    );
+
+    const shouldShowAppendLine =
+        itemDropIndicator?.isAppend &&
+        itemDropIndicator?.activeItemId;
+
     return (
         <>
-            <div className={styles.card} onContextMenu={handleCardContextMenu}>
-                <div className={styles.header}>
+            <div
+                ref={setNodeRef}
+                style={cardStyle}
+                className={`${styles.card} ${isDragging ? styles.dragging : ''}`.trim()}
+                onContextMenu={handleCardContextMenu}
+            >
+                <div className={styles.header} {...attributes} {...listeners}>
                     <h3>{title.toUpperCase()}</h3>
                     <div className={styles.actions} ref={menuRef}>
                         <button 
                             title="Adicionar Link"
                             onClick={() => {
-                                setEditingIndex(null);
+                                setEditingItemId(null);
                                 setIsModalOpen(true);
                             }}
                         >
@@ -116,40 +159,47 @@ const Card = ({ title, cardId, columnId, openLinksInNewTab = false, onRenameBoar
                     </div>
                 </div>
                 <div className={styles.content}>
-                    {links.map((link, index) => (
-                        <CardItem 
-                            key={index}
-                            label={link.label} 
-                            href={link.href}
-                            openInNewTab={openLinksInNewTab}
-                            onEdit={() => {
-                                setEditingIndex(index);
-                                setIsModalOpen(true);
-                            }}
-                            onDelete={() => handleDeleteLink(index)}
-                        />
-                    ))}
+                    <SortableContext items={sortableItemIds} strategy={verticalListSortingStrategy}>
+                        {links.map((link) => (
+                            <div key={link.id}>
+                                {isDropBeforeItem(link.id) ? <div className={styles.dropLine} /> : null}
+                                <CardItem
+                                    itemId={link.id}
+                                    cardId={cardId}
+                                    label={link.label}
+                                    href={link.href}
+                                    openInNewTab={openLinksInNewTab}
+                                    onEdit={() => {
+                                        setEditingItemId(link.id);
+                                        setIsModalOpen(true);
+                                    }}
+                                    onDelete={() => handleDeleteLink(link.id)}
+                                />
+                            </div>
+                        ))}
+                    </SortableContext>
+                    {shouldShowAppendLine ? <div className={styles.dropLine} /> : null}
                 </div>
             </div>
 
             <Modal 
                 isOpen={isModalOpen} 
                 onClose={closeModal}
-                title={editingIndex === null ? "Adicionar Link" : "Editar Link"}
+                title={editingItemId === null ? "Adicionar Link" : "Editar Link"}
             >
                 <AddLinkModal 
                     isOpen={isModalOpen}
                     onClose={closeModal}
                     onAddLink={handleSubmitLink}
                     initialData={
-                        editingIndex === null
+                        editingItemId === null
                             ? { url: '', title: '' }
                             : {
-                                url: links[editingIndex]?.href ?? '',
-                                title: links[editingIndex]?.label ?? '',
+                                url: links.find((link) => link.id === editingItemId)?.href ?? '',
+                                title: links.find((link) => link.id === editingItemId)?.label ?? '',
                             }
                     }
-                    submitLabel={editingIndex === null ? 'Adicionar' : 'Salvar'}
+                    submitLabel={editingItemId === null ? 'Adicionar' : 'Salvar'}
                 />
             </Modal>
 
