@@ -60,8 +60,13 @@ function App() {
     addLink,
     updateLink,
     deleteLink,
+    addTodo,
+    updateTodo,
+    deleteTodo,
+    toggleTodo,
     moveCard,
     moveItem,
+    moveTodo,
   } = useBoardData({
     activeTabId: activeTabId ?? activeTab?.id,
     columns: COLUMNS,
@@ -78,6 +83,7 @@ function App() {
     board,
     moveCard,
     moveItem,
+    moveTodo,
   });
 
   const appSettings = useMemo(
@@ -132,12 +138,16 @@ function App() {
               columnId={columnId}
               cards={board[columnId] ?? []}
               openLinksInNewTab={appSettings.openLinksInNewTab}
-              onCreateCard={(title) => createCard(columnId, title)}
+              onCreateCard={(title, type) => createCard(columnId, title, type)}
               onRenameCard={renameCard}
               onDeleteCard={deleteCard}
               onAddLink={addLink}
               onUpdateLink={updateLink}
               onDeleteLink={deleteLink}
+              onAddTodo={addTodo}
+              onUpdateTodo={updateTodo}
+              onDeleteTodo={deleteTodo}
+              onToggleTodo={toggleTodo}
               dragState={dragState}
             />
           ))}

@@ -9,6 +9,7 @@ import AddLinkModal from '../AddLinkModal/AddLinkModal';
 import CardMenu from '../CardMenu/CardMenu';
 import BoardTitleModal from '../BoardTitleModal/BoardTitleModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import TodoListCard from '../TodoListCard/TodoListCard';
 import styles from './Card.module.css';
 
 const Card = ({
@@ -20,9 +21,13 @@ const Card = ({
     onAddLink,
     onUpdateLink,
     onDeleteLink,
+    onAddTodo,
+    onUpdateTodo,
+    onDeleteTodo,
+    onToggleTodo,
     itemDropIndicator,
 }) => {
-    const { id: cardId, title, links = [] } = card;
+    const { id: cardId, title, type = 'links', links = [] } = card;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingItemId, setEditingItemId] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -122,6 +127,28 @@ const Card = ({
         itemDropIndicator?.isAppend &&
         itemDropIndicator?.activeItemId;
 
+    // Se for card de todo list, renderizar TodoListCard
+    if (type === 'todos') {
+        return (
+            <TodoListCard
+                card={card}
+                setNodeRef={setNodeRef}
+                cardStyle={cardStyle}
+                isDragging={isDragging}
+                dragAttributes={attributes}
+                dragListeners={listeners}
+                itemDropIndicator={itemDropIndicator}
+                onRenameBoard={onRenameBoard}
+                onDeleteBoard={onDeleteBoard}
+                onAddTodo={onAddTodo}
+                onUpdateTodo={onUpdateTodo}
+                onDeleteTodo={onDeleteTodo}
+                onToggleTodo={onToggleTodo}
+            />
+        );
+    }
+
+    // Renderizar card de links (default)
     return (
         <>
             <div

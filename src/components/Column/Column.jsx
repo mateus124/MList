@@ -14,6 +14,10 @@ const Column = ({
     onAddLink,
     onUpdateLink,
     onDeleteLink,
+    onAddTodo,
+    onUpdateTodo,
+    onDeleteTodo,
+    onToggleTodo,
     dragState,
 }) => {
     const { setNodeRef, isOver } = useDroppable({
@@ -27,7 +31,8 @@ const Column = ({
     const sortableCardIds = cards.map((card) => `card:${card.id}`);
     const lastCardId = cards[cards.length - 1]?.id;
     const isCardDrag = dragState?.activeType === 'card';
-    const isItemDrag = dragState?.activeType === 'item';
+    const isLinkDrag = dragState?.activeType === 'item';
+    const isTodoDrag = dragState?.activeType === 'todo';
     const isOverCurrentColumn = dragState?.overColumnId === columnId;
 
     const getCardDropLinePosition = () => {
@@ -50,16 +55,34 @@ const Column = ({
     const cardDropLine = getCardDropLinePosition();
 
     const getItemDropIndicator = (cardId) => {
+        const targetCard = cards.find((card) => card.id === cardId);
+        if (!targetCard) {
+            return null;
+        }
+
+        if (isLinkDrag && targetCard.type !== 'links') {
+            return null;
+        }
+
+        if (isTodoDrag && targetCard.type !== 'todos') {
+            return null;
+        }
+
+        const activeType = isLinkDrag ? 'item' : isTodoDrag ? 'todo' : null;
+        if (!activeType) {
+            return null;
+        }
+
         const isOverItemInCard =
-            isItemDrag &&
-            dragState?.overType === 'item' &&
+            dragState?.activeType === activeType &&
+            dragState?.overType === activeType &&
             dragState?.overCardId === cardId;
         const isOverCard =
-            isItemDrag &&
+            dragState?.activeType === activeType &&
             dragState?.overType === 'card' &&
             dragState?.overCardId === cardId;
         const isOverColumnLastCard =
-            isItemDrag &&
+            dragState?.activeType === activeType &&
             dragState?.overType === 'column' &&
             dragState?.overColumnId === columnId &&
             cardId === lastCardId;
@@ -69,8 +92,10 @@ const Column = ({
         }
 
         return {
-            activeItemId: dragState?.activeItemId,
-            overItemId: isOverItemInCard ? dragState?.overItemId : null,
+            activeItemId: activeType === 'item' ? dragState?.activeItemId : null,
+            overItemId: activeType === 'item' && isOverItemInCard ? dragState?.overItemId : null,
+            activeTodoId: activeType === 'todo' ? dragState?.activeTodoId : null,
+            overTodoId: activeType === 'todo' && isOverItemInCard ? dragState?.overTodoId : null,
             isAppend: !isOverItemInCard,
         };
     };
@@ -97,6 +122,10 @@ const Column = ({
                                 onAddLink={(payload) => onAddLink?.(card.id, payload)}
                                 onUpdateLink={(itemId, payload) => onUpdateLink?.(card.id, itemId, payload)}
                                 onDeleteLink={(itemId) => onDeleteLink?.(card.id, itemId)}
+                                onAddTodo={(text) => onAddTodo?.(card.id, text)}
+                                onUpdateTodo={(todoId, text) => onUpdateTodo?.(card.id, todoId, text)}
+                                onDeleteTodo={(todoId) => onDeleteTodo?.(card.id, todoId)}
+                                onToggleTodo={(todoId) => onToggleTodo?.(card.id, todoId)}
                             />
                         </div>
                     ))}
