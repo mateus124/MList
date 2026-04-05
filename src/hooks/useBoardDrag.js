@@ -10,7 +10,7 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
-const useBoardDrag = ({ board, moveCard, moveItem }) => {
+const useBoardDrag = ({ board, moveCard, moveItem, moveTodo }) => {
   const [dragState, setDragState] = useState(null);
 
   const sensors = useSensors(
@@ -37,12 +37,15 @@ const useBoardDrag = ({ board, moveCard, moveItem }) => {
       activeType,
       activeCardId: active.data.current?.cardId ?? null,
       activeItemId: active.data.current?.itemId ?? null,
+      activeTodoId: active.data.current?.todoId ?? null,
       activeItemLabel: null,
       activeItemHref: null,
+      activeTodoText: null,
       overType: null,
       overColumnId: null,
       overCardId: null,
       overItemId: null,
+      overTodoId: null,
     });
 
     if (activeType === 'item') {
@@ -59,6 +62,20 @@ const useBoardDrag = ({ board, moveCard, moveItem }) => {
         } : current));
       }
     }
+
+    if (activeType === 'todo') {
+      const activeTodoId = active.data.current?.todoId;
+      const dragTodo = Object.values(board)
+        .flatMap((cards) => cards.flatMap((card) => card.todos))
+        .find((todo) => todo.id === activeTodoId);
+
+      if (dragTodo) {
+        setDragState((current) => (current ? {
+          ...current,
+          activeTodoText: dragTodo.text,
+        } : current));
+      }
+    }
   };
 
   const handleDragOver = ({ over }) => {
@@ -69,6 +86,7 @@ const useBoardDrag = ({ board, moveCard, moveItem }) => {
         overColumnId: null,
         overCardId: null,
         overItemId: null,
+        overTodoId: null,
       } : current));
       return;
     }
@@ -81,10 +99,13 @@ const useBoardDrag = ({ board, moveCard, moveItem }) => {
       overColumnId: overType === 'column' ? over.data.current?.columnId : over.data.current?.columnId ?? null,
       overCardId: overType === 'item'
         ? over.data.current?.cardId
+        : overType === 'todo'
+          ? over.data.current?.cardId
         : overType === 'card'
           ? over.data.current?.cardId
           : null,
       overItemId: overType === 'item' ? over.data.current?.itemId : null,
+      overTodoId: overType === 'todo' ? over.data.current?.todoId : null,
     } : current));
   };
 
@@ -134,6 +155,33 @@ const useBoardDrag = ({ board, moveCard, moveItem }) => {
       moveItem({
         activeItemId,
         overItemId,
+        overCardId,
+      });
+
+      return;
+    }
+
+    if (activeType === 'todo') {
+      const activeTodoId = active.data.current?.todoId;
+      const overTodoId = overType === 'todo' ? over.data.current?.todoId : null;
+      const overColumnId = overType === 'column' ? over.data.current?.columnId : null;
+
+      let overCardId = overType === 'todo'
+        ? over.data.current?.cardId
+        : overType === 'card'
+          ? over.data.current?.cardId
+          : null;
+
+      if (!overCardId && overColumnId) {
+        const cardsInColumn = board[overColumnId] ?? [];
+        overCardId = cardsInColumn[cardsInColumn.length - 1]?.id ?? null;
+      }
+
+      if (!activeTodoId || !overCardId) return;
+
+      moveTodo({
+        activeTodoId,
+        overTodoId,
         overCardId,
       });
     }

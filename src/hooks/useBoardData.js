@@ -16,10 +16,18 @@ const normalizeLink = (link) => ({
   href: String(link.href ?? '').trim(),
 });
 
+const normalizeTodo = (todo) => ({
+  id: todo.id ?? createId('todo'),
+  text: String(todo.text ?? '').trim(),
+  completed: Boolean(todo.completed ?? false),
+});
+
 const normalizeCard = (card) => ({
   id: card.id ?? createId('card'),
   title: String(card.title ?? '').trim(),
+  type: card.type ?? 'links',
   links: Array.isArray(card.links) ? card.links.map(normalizeLink) : [],
+  todos: Array.isArray(card.todos) ? card.todos.map(normalizeTodo) : [],
 });
 
 const normalizeBoard = (board, columns) => {
@@ -121,6 +129,19 @@ const findItemLocation = (board, itemId) => {
   return null;
 };
 
+const findTodoLocation = (board, todoId) => {
+  for (const [columnId, cards] of Object.entries(board)) {
+    for (let cardIndex = 0; cardIndex < cards.length; cardIndex += 1) {
+      const todoIndex = cards[cardIndex].todos.findIndex((todo) => todo.id === todoId);
+      if (todoIndex !== -1) {
+        return { columnId, cardIndex, todoIndex };
+      }
+    }
+  }
+
+  return null;
+};
+
 const useBoardData = ({ activeTabId, columns }) => {
   const {
     data: boardsByTab,
@@ -185,14 +206,21 @@ const useBoardData = ({ activeTabId, columns }) => {
     await saveBoardsByTab(nextBoards);
   };
 
-  const createCard = async (columnId, title) => {
+  const createCard = async (columnId, title, type = 'links') => {
     const normalizedTitle = title.trim();
     if (!normalizedTitle) return;
 
     const nextBoard = normalizeBoard(activeBoard, columns);
+    const newCard = {
+      id: createId('card'),
+      title: normalizedTitle,
+      type,
+      links: type === 'links' ? [] : [],
+      todos: type === 'todos' ? [] : [],
+    };
     nextBoard[columnId] = [
       ...nextBoard[columnId],
-      { id: createId('card'), title: normalizedTitle, links: [] },
+      newCard,
     ];
 
     await saveActiveBoard(nextBoard);
@@ -284,6 +312,80 @@ const useBoardData = ({ activeTabId, columns }) => {
     await saveActiveBoard(nextBoard);
   };
 
+  const addTodo = async (cardId, text) => {
+    const nextBoard = normalizeBoard(activeBoard, columns);
+    const cardLocation = findCardLocation(nextBoard, cardId);
+    if (!cardLocation) return;
+
+    const targetCard = nextBoard[cardLocation.columnId][cardLocation.cardIndex];
+    const newTodo = {
+      id: createId('todo'),
+      text: String(text ?? '').trim(),
+      completed: false,
+    };
+
+    nextBoard[cardLocation.columnId][cardLocation.cardIndex] = {
+      ...targetCard,
+      todos: [...(targetCard.todos ?? []), newTodo],
+    };
+
+    await saveActiveBoard(nextBoard);
+  };
+
+  const updateTodo = async (cardId, todoId, text) => {
+    const nextBoard = normalizeBoard(activeBoard, columns);
+    const cardLocation = findCardLocation(nextBoard, cardId);
+    if (!cardLocation) return;
+
+    const targetCard = nextBoard[cardLocation.columnId][cardLocation.cardIndex];
+    const nextTodos = targetCard.todos.map((todo) =>
+      todo.id === todoId
+        ? { ...todo, text: String(text ?? '').trim() }
+        : todo
+    );
+
+    nextBoard[cardLocation.columnId][cardLocation.cardIndex] = {
+      ...targetCard,
+      todos: nextTodos,
+    };
+
+    await saveActiveBoard(nextBoard);
+  };
+
+  const deleteTodo = async (cardId, todoId) => {
+    const nextBoard = normalizeBoard(activeBoard, columns);
+    const cardLocation = findCardLocation(nextBoard, cardId);
+    if (!cardLocation) return;
+
+    const targetCard = nextBoard[cardLocation.columnId][cardLocation.cardIndex];
+    nextBoard[cardLocation.columnId][cardLocation.cardIndex] = {
+      ...targetCard,
+      todos: targetCard.todos.filter((todo) => todo.id !== todoId),
+    };
+
+    await saveActiveBoard(nextBoard);
+  };
+
+  const toggleTodo = async (cardId, todoId) => {
+    const nextBoard = normalizeBoard(activeBoard, columns);
+    const cardLocation = findCardLocation(nextBoard, cardId);
+    if (!cardLocation) return;
+
+    const targetCard = nextBoard[cardLocation.columnId][cardLocation.cardIndex];
+    const nextTodos = targetCard.todos.map((todo) =>
+      todo.id === todoId
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    );
+
+    nextBoard[cardLocation.columnId][cardLocation.cardIndex] = {
+      ...targetCard,
+      todos: nextTodos,
+    };
+
+    await saveActiveBoard(nextBoard);
+  };
+
   const moveCard = async ({ activeCardId, overCardId, overColumnId }) => {
     const nextBoard = normalizeBoard(activeBoard, columns);
     const source = findCardLocation(nextBoard, activeCardId);
@@ -350,6 +452,7 @@ const useBoardData = ({ activeTabId, columns }) => {
     const targetCard = nextBoard[target.columnId][target.cardIndex];
 
     if (!sourceCard || !targetCard) return;
+    if (sourceCard.type !== 'links' || targetCard.type !== 'links') return;
 
     if (source.columnId === target.columnId && source.cardIndex === target.cardIndex) {
       nextBoard[source.columnId][source.cardIndex] = {
@@ -381,6 +484,62 @@ const useBoardData = ({ activeTabId, columns }) => {
     await saveActiveBoard(nextBoard);
   };
 
+  const moveTodo = async ({ activeTodoId, overTodoId, overCardId }) => {
+    const nextBoard = normalizeBoard(activeBoard, columns);
+    const source = findTodoLocation(nextBoard, activeTodoId);
+    if (!source) return;
+
+    let target = overTodoId ? findTodoLocation(nextBoard, overTodoId) : null;
+
+    if (!target && overCardId) {
+      const targetCardLocation = findCardLocation(nextBoard, overCardId);
+      if (targetCardLocation) {
+        target = {
+          columnId: targetCardLocation.columnId,
+          cardIndex: targetCardLocation.cardIndex,
+          todoIndex: nextBoard[targetCardLocation.columnId][targetCardLocation.cardIndex].todos.length,
+        };
+      }
+    }
+
+    if (!target) return;
+
+    const sourceCard = nextBoard[source.columnId][source.cardIndex];
+    const targetCard = nextBoard[target.columnId][target.cardIndex];
+
+    if (!sourceCard || !targetCard) return;
+    if (sourceCard.type !== 'todos' || targetCard.type !== 'todos') return;
+
+    if (source.columnId === target.columnId && source.cardIndex === target.cardIndex) {
+      nextBoard[source.columnId][source.cardIndex] = {
+        ...sourceCard,
+        todos: arrayMove(sourceCard.todos, source.todoIndex, target.todoIndex),
+      };
+
+      await saveActiveBoard(nextBoard);
+      return;
+    }
+
+    const sourceTodos = [...sourceCard.todos];
+    const [movingTodo] = sourceTodos.splice(source.todoIndex, 1);
+    if (!movingTodo) return;
+
+    const targetTodos = [...targetCard.todos];
+    targetTodos.splice(target.todoIndex, 0, movingTodo);
+
+    nextBoard[source.columnId][source.cardIndex] = {
+      ...sourceCard,
+      todos: sourceTodos,
+    };
+
+    nextBoard[target.columnId][target.cardIndex] = {
+      ...targetCard,
+      todos: targetTodos,
+    };
+
+    await saveActiveBoard(nextBoard);
+  };
+
   return {
     board: activeBoard,
     isLoaded,
@@ -390,8 +549,13 @@ const useBoardData = ({ activeTabId, columns }) => {
     addLink,
     updateLink,
     deleteLink,
+    addTodo,
+    updateTodo,
+    deleteTodo,
+    toggleTodo,
     moveCard,
     moveItem,
+    moveTodo,
   };
 };
 

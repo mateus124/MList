@@ -29,8 +29,8 @@
     border-radius: 12px;
     width: 100%;
     display: flex;
-    align-items: center;
-    column-gap: 8px;
+    flex-direction: column;
+    gap: 12px;
     padding: 12px;
     box-sizing: border-box;
     backdrop-filter: blur(14px) saturate(140%);
@@ -58,6 +58,12 @@
     border-color: var(--accent);
 }
 
+.buttonsRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 .buttonAdd {
     background-color: var(--accent);
     border: none;
@@ -65,10 +71,15 @@
     color: #15222a;
     font-weight: 800;
     font-size: 0.8rem;
-    height: 30px;
+    height: 40px;
     min-width: 66px;
     padding: 0 14px;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.buttonAdd:hover {
+    opacity: 0.9;
 }
 
 .buttonCancel {
@@ -76,10 +87,48 @@
     border: 1px solid color-mix(in srgb, var(--danger) 55%, transparent);
     border-radius: 8px;
     color: var(--danger);
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: 0.2s;
+    flex-shrink: 0;
+}
+
+.buttonCancel:hover {
+    background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+    border-color: var(--danger);
+}
+
+.typeSelector {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.radioLabel:hover {
+    color: var(--text-primary);
+}
+
+.radio {
+    cursor: pointer;
+    accent-color: var(--accent);
+}
+
+.inputRow {
+    display: flex;
+    width: 100%;
 }
