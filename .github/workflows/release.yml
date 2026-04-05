@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: Tipo de bump de versao
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   release:
@@ -25,9 +36,11 @@ jobs:
       - name: 3. Instalar dependências
         run: npm install
 
-      - name: 4. Atualizar versão (MINOR)
+      - name: 4. Atualizar versao
         id: version
-        run: node scripts/version.js >> $GITHUB_OUTPUT
+        env:
+          BUMP_TYPE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.bump_type || 'patch' }}
+        run: node scripts/version.js "$BUMP_TYPE" >> $GITHUB_OUTPUT
 
       - name: 5. Build
         run: npm run build
