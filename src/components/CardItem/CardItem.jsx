@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { TbEdit } from 'react-icons/tb';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { resolveFaviconUrl } from '../../utils/faviconResolver';
 import styles from './CardItem.module.css';
 
 const CardItem = ({
@@ -35,6 +36,7 @@ const CardItem = ({
         transition,
     };
     const wasDraggingRef = useRef(false);
+    const [faviconState, setFaviconState] = useState({ href: null, url: null });
 
     useEffect(() => {
         if (isDragging) {
@@ -53,16 +55,24 @@ const CardItem = ({
         return () => window.clearTimeout(timeoutId);
     }, [isDragging]);
 
-    const getFaviconUrl = (url) => {
-        try {
-            const domain = new URL(url).hostname;
-            return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
-        } catch {
-            return null;
-        }
-    };
+    useEffect(() => {
+        let isMounted = true;
 
-    const faviconUrl = getFaviconUrl(href);
+        const loadFavicon = async () => {
+            const resolvedUrl = await resolveFaviconUrl(href);
+            if (isMounted) {
+                setFaviconState({ href, url: resolvedUrl });
+            }
+        };
+
+        loadFavicon();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [href]);
+
+    const faviconUrl = faviconState.href === href ? faviconState.url : null;
 
     const handleLinkClick = (event) => {
         if (isDragging || wasDraggingRef.current) {

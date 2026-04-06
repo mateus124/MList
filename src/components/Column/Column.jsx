@@ -8,6 +8,7 @@ const Column = ({
     columnId,
     cards,
     openLinksInNewTab = false,
+    showAddCardButton = true,
     onCreateCard,
     onRenameCard,
     onDeleteCard,
@@ -135,9 +136,11 @@ const Column = ({
                     : null}
             </div>
 
-            <div className={styles.addArea}>
-                <AddNewCard className={styles.addButton} onCreateCard={onCreateCard}/>
-            </div>
+            {showAddCardButton ? (
+                <div className={styles.addArea}>
+                    <AddNewCard className={styles.addButton} onCreateCard={onCreateCard}/>
+                </div>
+            ) : null}
         </div>
     )
 }
