@@ -63,6 +63,16 @@ const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings, appVersion
                             onChange={() => handleToggle('showUpdateNotifications')}
                         />
                     </label>
+
+                    <label className={styles.setting}>
+                        <div className={styles.settingLabel}>
+                            <span>Mostrar botao de adicionar cards</span>
+                        </div>
+                        <ToggleSwitch
+                            checked={settings.showAddCardButton ?? true}
+                            onChange={() => handleToggle('showAddCardButton')}
+                        />
+                    </label>
                 </div>
 
                 <footer className={styles.footer}>

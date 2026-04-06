@@ -15,6 +15,7 @@ import useUpdateChecker, { RELEASES_PAGE_URL } from './hooks/useUpdateChecker';
 const DEFAULT_APP_SETTINGS = {
   openLinksInNewTab: false,
   showUpdateNotifications: true,
+  showAddCardButton: true,
   dismissedUpdateVersion: null,
 };
 
@@ -138,6 +139,7 @@ function App() {
               columnId={columnId}
               cards={board[columnId] ?? []}
               openLinksInNewTab={appSettings.openLinksInNewTab}
+              showAddCardButton={appSettings.showAddCardButton}
               onCreateCard={(title, type) => createCard(columnId, title, type)}
               onRenameCard={renameCard}
               onDeleteCard={deleteCard}
