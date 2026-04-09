@@ -129,9 +129,11 @@ Use este fluxo quando quiser instalar uma versão estável já empacotada.
 
 ### 4) Atualizar para uma nova versão
 
-1. Baixe e extraia a nova release
-2. No navegador, acesse `chrome://extensions/` (ou equivalente), clique em **Atualizar**
-3. Se necessário, remova a versão anterior e carregue a nova pasta novamente
+1. Baixe o `.zip` da nova release
+2. Extraia os arquivos **por cima da pasta da extensão já instalada** (substituindo os arquivos antigos pelos novos)
+3. No navegador, acesse `chrome://extensions/` (ou equivalente para seu navegador Chromium)
+4. Clique em **Recarregar** na extensão MList (ou use o botão global de recarregar/atualizar extensões)
+5. Abra uma nova aba para validar a versão atualizada
 
 ## Contribuição
 
