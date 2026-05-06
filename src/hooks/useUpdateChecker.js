@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 export const RELEASES_API_URL = 'https://api.github.com/repos/mateus124/MList/releases/latest';
 export const RELEASES_PAGE_URL = 'https://github.com/mateus124/MList/releases/latest';
+const UPDATE_NOTICE_AUTO_DISMISS_MS = 5000;
 
 const parseVersion = (version) => String(version ?? '')
   .trim()
@@ -82,7 +83,7 @@ const useUpdateChecker = ({ enabled, isSettingsLoaded, dismissedVersion }) => {
 
     const timeoutId = window.setTimeout(() => {
       setAvailableUpdateVersion(null);
-    }, 3000);
+    }, UPDATE_NOTICE_AUTO_DISMISS_MS);
 
     return () => window.clearTimeout(timeoutId);
   }, [availableUpdateVersion]);
