@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MList",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Dashboard de links para produtividade em sua nova aba",
   "permissions": [
     "storage"
