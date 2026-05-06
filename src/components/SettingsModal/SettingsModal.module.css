@@ -92,3 +92,69 @@
 .setting:hover {
     color: var(--text-primary);
 }
+
+.backupSection {
+    margin-top: 8px;
+    border-top: 1px solid var(--surface-border);
+    padding-top: 16px;
+    display: grid;
+    gap: 10px;
+}
+
+.backupTitle {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.backupDescription {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    line-height: 1.4;
+}
+
+.backupActions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.backupButton {
+    border: 1px solid var(--surface-border);
+    background: var(--surface-bg);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.86rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.backupButton:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--surface-border-hover, var(--surface-border));
+}
+
+.backupButton:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.backupMessage {
+    margin: 0;
+    font-size: 0.84rem;
+}
+
+.backupMessageSuccess {
+    color: #3ea26f;
+}
+
+.backupMessageError {
+    color: #d26a6a;
+}

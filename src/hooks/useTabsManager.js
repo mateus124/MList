@@ -36,9 +36,32 @@ const removeStorageKeysByPrefix = async (prefix) => {
   }
 };
 
+const normalizeTabs = (tabs) => {
+  if (!Array.isArray(tabs)) {
+    return DEFAULT_TABS;
+  }
+
+  const nextTabs = tabs
+    .map((tab) => ({
+      id: String(tab?.id ?? '').trim(),
+      title: String(tab?.title ?? '').trim(),
+    }))
+    .filter((tab) => tab.id && tab.title);
+
+  if (!nextTabs.length) {
+    return DEFAULT_TABS;
+  }
+
+  return nextTabs;
+};
+
 const useTabsManager = () => {
-  const { data: tabs, saveToStorage: saveTabs } = useLocalStorage('mlist_tabs', DEFAULT_TABS);
-  const { data: activeTabId, saveToStorage: saveActiveTabId } = useLocalStorage('mlist_active_tab_id', DEFAULT_TABS[0].id);
+  const { data: tabs, saveToStorage: saveTabs, isLoaded: isTabsLoaded } = useLocalStorage('mlist_tabs', DEFAULT_TABS);
+  const {
+    data: activeTabId,
+    saveToStorage: saveActiveTabId,
+    isLoaded: isActiveTabLoaded,
+  } = useLocalStorage('mlist_active_tab_id', DEFAULT_TABS[0].id);
 
   useEffect(() => {
     if (!tabs.length) {
@@ -112,14 +135,30 @@ const useTabsManager = () => {
     return true;
   };
 
+  const replaceTabsData = async ({ tabs: nextTabsInput, activeTabId: nextActiveTabId }) => {
+    const nextTabs = normalizeTabs(nextTabsInput);
+    const hasProvidedActiveTab = nextTabs.some((tab) => tab.id === nextActiveTabId);
+    const safeActiveTabId = hasProvidedActiveTab ? nextActiveTabId : nextTabs[0].id;
+
+    await saveTabs(nextTabs);
+    await saveActiveTabId(safeActiveTabId);
+
+    return {
+      tabs: nextTabs,
+      activeTabId: safeActiveTabId,
+    };
+  };
+
   return {
     tabs,
     activeTab,
     activeTabId,
+    isLoaded: isTabsLoaded && isActiveTabLoaded,
     selectTab,
     addTab,
     renameTab,
     deleteTab,
+    replaceTabsData,
   };
 };
 

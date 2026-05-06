@@ -1,10 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdClose } from 'react-icons/md';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import styles from './SettingsModal.module.css';
 
-const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings, appVersion }) => {
+const SettingsModal = ({
+    isOpen,
+    onClose,
+    settings,
+    onChangeSettings,
+    onExportData,
+    onImportData,
+    appVersion,
+}) => {
     const modalRef = useRef(null);
+    const importInputRef = useRef(null);
+    const [isBackupLoading, setIsBackupLoading] = useState(false);
+    const [backupMessage, setBackupMessage] = useState('');
+    const [backupMessageType, setBackupMessageType] = useState('info');
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
@@ -24,6 +36,69 @@ const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings, appVersion
             ...settings,
             [key]: !settings[key],
         });
+    };
+
+    const showBackupResult = (result, fallbackMessage) => {
+        const success = Boolean(result?.success);
+        const message = result?.message ?? fallbackMessage;
+
+        setBackupMessageType(success ? 'success' : 'error');
+        setBackupMessage(message);
+    };
+
+    const handleExportClick = async () => {
+        if (!onExportData) {
+            return;
+        }
+
+        setIsBackupLoading(true);
+        setBackupMessage('');
+
+        try {
+            const result = await onExportData();
+            showBackupResult(result, 'Nao foi possivel exportar o backup.');
+        } catch (error) {
+            showBackupResult({ success: false }, 'Nao foi possivel exportar o backup.');
+        } finally {
+            setIsBackupLoading(false);
+        }
+    };
+
+    const handleOpenImportPicker = () => {
+        importInputRef.current?.click();
+    };
+
+    const handleImportFileChange = async (event) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+
+        if (!file) {
+            return;
+        }
+
+        const shouldContinue = window.confirm(
+            'Importar backup vai substituir os dados atuais. Deseja continuar?',
+        );
+
+        if (!shouldContinue) {
+            return;
+        }
+
+        if (!onImportData) {
+            return;
+        }
+
+        setIsBackupLoading(true);
+        setBackupMessage('');
+
+        try {
+            const result = await onImportData(file);
+            showBackupResult(result, 'Nao foi possivel importar o backup.');
+        } catch (error) {
+            showBackupResult({ success: false }, 'Nao foi possivel importar o backup.');
+        } finally {
+            setIsBackupLoading(false);
+        }
     };
 
     if (!isOpen) return null;
@@ -73,6 +148,53 @@ const SettingsModal = ({ isOpen, onClose, settings, onChangeSettings, appVersion
                             onChange={() => handleToggle('showAddCardButton')}
                         />
                     </label>
+
+                    <section className={styles.backupSection}>
+                        <p className={styles.backupTitle}>Backup dos dados</p>
+                        <p className={styles.backupDescription}>
+                            Exporte ou importe um arquivo JSON com cards de links e cards de todo lists.
+                        </p>
+
+                        <div className={styles.backupActions}>
+                            <button
+                                type="button"
+                                className={styles.backupButton}
+                                onClick={handleExportClick}
+                                disabled={isBackupLoading}
+                            >
+                                Exportar JSON
+                            </button>
+
+                            <button
+                                type="button"
+                                className={styles.backupButton}
+                                onClick={handleOpenImportPicker}
+                                disabled={isBackupLoading}
+                            >
+                                Importar JSON
+                            </button>
+                        </div>
+
+                        <input
+                            ref={importInputRef}
+                            type="file"
+                            accept="application/json,.json"
+                            className={styles.hiddenInput}
+                            onChange={handleImportFileChange}
+                        />
+
+                        {backupMessage && (
+                            <p
+                                className={`${styles.backupMessage} ${
+                                    backupMessageType === 'success'
+                                        ? styles.backupMessageSuccess
+                                        : styles.backupMessageError
+                                }`}
+                            >
+                                {backupMessage}
+                            </p>
+                        )}
+                    </section>
                 </div>
 
                 <footer className={styles.footer}>
