@@ -20,7 +20,9 @@ O foco do projeto é oferecer uma experiência simples e rápida para organizar 
 - Opção de abrir links em nova guia (configurável)
 - Estrutura visual baseada em cards
 - Persistência local de dados com `chrome.storage.local`/`localStorage` e `IndexedDB`
+- Backup dos dados em JSON com exportação e importação pela tela de configurações
 - Migração automática de dados legados para o novo formato de board por aba
+- Aviso de atualização com auto-dismiss em 5s para não interromper o uso
 - Interface pensada para acesso rápido aos links mais utilizados
 
 ## Tecnologias Utilizadas
@@ -47,7 +49,7 @@ O foco do projeto é oferecer uma experiência simples e rápida para organizar 
 1. Clone o repositório:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone https://github.com/mateus124/MList
 ```
 
 2. Acesse a pasta do projeto:
@@ -105,6 +107,15 @@ As versões atuais migraram o formato de persistência para um modelo unificado 
 - As chaves legadas nao sao removidas durante a migracao, reduzindo risco de perda de dados
 - Em caso de falha de escrita no storage, os dados antigos permanecem disponiveis
 
+## Backup em JSON
+
+O MList inclui um fluxo de backup dos dados diretamente nas configurações.
+
+- Exporta um arquivo JSON com os boards, cards e todo lists da aplicação
+- Importa um arquivo JSON para restaurar ou mover os dados entre instalações
+- Valida o conteúdo do backup antes de aplicar a restauração
+- Mostra mensagens de sucesso e erro para orientar a operação
+
 ## Instalação pela Release
 
 Use este fluxo quando quiser instalar uma versão estável já empacotada.
@@ -134,6 +145,8 @@ Use este fluxo quando quiser instalar uma versão estável já empacotada.
 3. No navegador, acesse `chrome://extensions/` (ou equivalente para seu navegador Chromium)
 4. Clique em **Recarregar** na extensão MList (ou use o botão global de recarregar/atualizar extensões)
 5. Abra uma nova aba para validar a versão atualizada
+
+O aviso de atualização aparece de forma discreta e some automaticamente após 5 segundos, deixando a navegação mais fluida.
 
 ## Contribuição
 
@@ -190,7 +203,6 @@ git push origin feat/minha-melhoria
 ## Roadmap (Possíveis Melhorias Futuras) 
 
 - [ ] Busca rápida global de links
-- [ ] Importação e exportação de dados (JSON)
 - [ ] Sincronização opcional entre dispositivos (quando aplicável)
 - [ ] Temas visuais (claro/escuro e personalização de cores)
 - [ ] Atalhos de teclado para navegação rápida
