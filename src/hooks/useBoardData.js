@@ -10,6 +10,21 @@ const createEmptyBoard = (columns) => (
   Object.fromEntries(columns.map((columnId) => [columnId, []]))
 );
 
+const normalizeBoardsByTab = (boardsByTab, columns, allowedTabIds = null) => {
+  if (!boardsByTab || typeof boardsByTab !== 'object') {
+    return {};
+  }
+
+  const tabIds = Array.isArray(allowedTabIds)
+    ? allowedTabIds
+    : Object.keys(boardsByTab);
+
+  return tabIds.reduce((result, tabId) => {
+    result[tabId] = normalizeBoard(boardsByTab[tabId], columns);
+    return result;
+  }, {});
+};
+
 const normalizeLink = (link) => ({
   id: link.id ?? createId('item'),
   label: String(link.label ?? '').trim(),
@@ -204,6 +219,12 @@ const useBoardData = ({ activeTabId, columns }) => {
 
     boardsRef.current = nextBoards;
     await saveBoardsByTab(nextBoards);
+  };
+
+  const replaceBoardsByTab = async (nextBoardsByTab, allowedTabIds = null) => {
+    const normalized = normalizeBoardsByTab(nextBoardsByTab, columns, allowedTabIds);
+    boardsRef.current = normalized;
+    await saveBoardsByTab(normalized);
   };
 
   const createCard = async (columnId, title, type = 'links') => {
@@ -542,6 +563,7 @@ const useBoardData = ({ activeTabId, columns }) => {
 
   return {
     board: activeBoard,
+    boardsByTab,
     isLoaded,
     createCard,
     renameCard,
@@ -556,6 +578,7 @@ const useBoardData = ({ activeTabId, columns }) => {
     moveCard,
     moveItem,
     moveTodo,
+    replaceBoardsByTab,
   };
 };
 
